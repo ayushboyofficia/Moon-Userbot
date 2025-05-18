@@ -1,52 +1,18 @@
-#  Moon-Userbot - telegram userbot
-#  Copyright (C) 2020-present Moon Userbot Organization
+# Moon-Userbot - telegram userbot
+# Copyright (C) 2020-present Moon Userbot Organization
 #
-#  This program is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 3 of the License, or
-#  (at your option) any later version.
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-
-#  You should have received a copy of the GNU General Public License
-#  along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
-# /// script
-# requires-python = ">=3.11"
-# dependencies = [
-#     "pip",
-#     "pyrofork",
-#     "tgcrypto",
-#     "wheel",
-#     "gunicorn",
-#     "flask",
-#     "humanize",
-#     "pygments",
-#     "pymongo",
-#     "psutil",
-#     "Pillow>=10.3.0",
-#     "click",
-#     "dnspython",
-#     "requests",
-#     "environs",
-#     "GitPython",
-#     "beautifulsoup4",
-#     "aiohttp",
-#     "aiofiles",
-#     "pySmartDL",
-#     "lexica-api",
-# ]
-# ///
 import os
 import logging
-
 import sqlite3
 import platform
 import subprocess
-
+from flask import Flask
+from threading import Thread
 from pyrogram import Client, idle, errors
 from pyrogram.enums.parse_mode import ParseMode
 from pyrogram.raw.functions.account import GetAuthorizations, DeleteAccount
@@ -58,6 +24,13 @@ from utils.misc import gitrepo, userbot_version
 from utils.scripts import restart
 from utils.rentry import rentry_cleanup_job
 from utils.module import ModuleManager
+
+# Initialize Flask web server
+web_app = Flask(__name__)
+
+@web_app.route('/')
+def health_check():
+    return "Moon-Userbot is running!", 200
 
 SCRIPT_PATH = os.path.dirname(os.path.realpath(__file__))
 if SCRIPT_PATH != os.getcwd():
@@ -80,7 +53,6 @@ if config.STRINGSESSION:
     common_params["session_string"] = config.STRINGSESSION
 
 app = Client("my_account", **common_params)
-
 
 def load_missing_modules():
     all_modules = db.get("custom.modules", "allModules", [])
@@ -112,7 +84,6 @@ def load_missing_modules():
                 logging.info("Loaded missing module: %s", module_name)
             else:
                 logging.warning("Failed to load module: %s", module_name)
-
 
 async def main():
     logging.basicConfig(
@@ -156,7 +127,6 @@ async def main():
             pass
         db.remove("core.updater", "restart_info")
 
-    # required for sessionkiller module
     if db.get("core.sessionkiller", "enabled", False):
         db.set(
             "core.sessionkiller",
@@ -168,13 +138,17 @@ async def main():
         )
 
     logging.info("Moon-Userbot started!")
-
     app.loop.create_task(rentry_cleanup_job())
-
     await idle()
-
     await app.stop()
 
-
 if __name__ == "__main__":
+    # Start Flask server in background
+    flask_thread = Thread(
+        target=lambda: web_app.run(host='0.0.0.0', port=8000, debug=False, use_reloader=False)
+    )
+    flask_thread.daemon = True
+    flask_thread.start()
+
+    # Run main Pyrogram client
     app.run(main())
