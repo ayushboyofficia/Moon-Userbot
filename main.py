@@ -137,7 +137,7 @@ async def main():
             ],
         )
 
-    logging.info("Moon-Userbot started!")
+    logging.info("xenta-Userbot started⚡⚡!")
     app.loop.create_task(rentry_cleanup_job())
     await idle()
     await app.stop()
