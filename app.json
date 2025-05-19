@@ -48,27 +48,27 @@
     "APIFLASH_KEY": {
       "description": "ONLY, If you want to use web screenshot plugin You can get it from https://apiflash.com/dashboard/access_keys",
       "value": "123456779:ABCDE",
-      "required": true
+      "required": false
     },
     "RMBG_KEY": {
       "description": "ONLY, If you want to use removbg plugin You can get it from https://www.remove.bg/dashboard#api-key",
       "value": "123456779:ABCDE",
-      "required": true
+      "required": false
     },
     "VT_KEY": {
       "description": "ONLY, If you want to use VirusTotal plugin You can get it from https://www.virustotal.com/gui/",
       "value": "123456779:ABCDE",
-      "required": true
+      "required": false
     },
     "GEMINI_KEY": {
       "description": "ONLY, If you want to use gemini ai plugin You can get it from https://makersuite.google.com/app/apikey",
       "value": "123456779:ABCDE",
-      "required": true
+      "required": false
     },
     "COHERE_KEY": {
       "description": "ONLY, If you want to use cohere ai plugin You can get it from https://dashboard.cohere.com/api-keys",
       "value": "123456779:ABCDE",
-      "required": true
+      "required": false
     }
   },
   "buildpacks": [
