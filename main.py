@@ -83,7 +83,7 @@ def load_missing_modules():
                     f.write(resp.content)
                 logging.info("Loaded missing module: %s", module_name)
             else:
-                logging.warning("Failed to load module: %s", module_name)
+                logging.warning("FAIL HO GAYA to load module: %s", module_name)
 
 async def main():
     logging.basicConfig(
@@ -118,7 +118,7 @@ async def main():
 
     if info := db.get("core.updater", "restart_info"):
         text = {
-            "restart": "<b>Restart completed!</b>",
+            "restart": "<b>LE BHAI CHALU HO GAYA KYA KAAM H BATA🥱!</b>",
             "update": "<b>Update process completed!</b>",
         }[info["type"]]
         try:
