@@ -24,7 +24,7 @@ from utils.misc import modules_help, prefix, userbot_version, python_version, gi
 
 @Client.on_message(filters.command(["support", "repo"], prefix) & filters.me)
 async def support(_, message: Message):
-    devs = ["@Qbtaumai", "@H4T3H46K3R"]
+    devs = ["@lithiumpolymer", "@lithiumpolymer"]
     random.shuffle(devs)
 
     commands_count = 0.0
@@ -33,14 +33,14 @@ async def support(_, message: Message):
             commands_count += 1
 
     await message.edit(
-        f"<b>Moon-Userbot\n\n"
+        f"<b>DRAGON⚡-Userbot\n\n"
         "GitHub: <a href=https://github.com/The-MoonTg-project/Moon-Userbot>Moon-Userbot</a>\n"
         "Custom modules repository: <a href=https://github.com/The-MoonTg-project/custom_modules>"
         "custom_modules</a>\n"
         "License: <a href=https://github.com/The-MoonTg-project/Moon-Userbot/blob/master/LICENSE>GNU GPL v3</a>\n\n"
-        "Channel: @moonuserbot\n"
-        "Custom modules: @moonub_modules\n"
-        "Chat [EN]: @moonub_chat\n"
+        "Channel: @lithiumpolymer\n"
+        "Custom modules: @lithiumpolymer\n"
+        "Chat [EN]: @lithiumpolymer\n"
         f"Main developers: {', '.join(devs)}\n\n"
         f"Python version: {python_version}\n"
         f"Modules count: {len(modules_help) / 1}\n"
@@ -67,8 +67,8 @@ async def version(client: Client, message: Message):
     )
 
     await message.reply(
-        f"<b>Moon Userbot version: {userbot_version}\n"
-        f"Changelog </b><i><a href=https://t.me/moonuserbot/{changelog}>in channel</a></i>.<b>\n"
+        f"<b>🐉⚡🐉Userbot version: {userbot_version}\n"
+        f"Changelog </b><i><a href=https://t.me/lithiumpolymer/{changelog}>in channel</a></i>.<b>\n"
         f"Changelog written by </b><i>"
         f"<a href=https://t.me/Qbtaumai>Abhi</a></i>\n\n"
         + (
