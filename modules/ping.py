@@ -25,9 +25,9 @@ from utils.misc import modules_help, prefix
 @Client.on_message(filters.command(["ping", "p"], prefix) & filters.me)
 async def ping(_, message: Message):
     start = perf_counter()
-    await message.edit("<b>JINDA HU SALE SATURN USERBOT⚡!</b>")
+    await message.edit("<b>JINDA HU SALE चांद USERBOT KYA KAAM HAIN SOR🐉⚡!</b>")
     end = perf_counter()
-    await message.edit(f"<b>JINDA HU SALE SATURN USERBOT⚡! {round(end - start, 3)}s</b>")
+    await message.edit(f"<b>JINDA HU SALE चांद USERBOT KYA KAAM H SOR⚡! {round(end - start, 3)}s</b>")
 
 
 modules_help["ping"] = {
