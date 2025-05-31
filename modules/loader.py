@@ -271,7 +271,7 @@ async def unload_all_mods(_, message: Message):
         return await message.edit("<b>You don't have any modules installed</b>")
     shutil.rmtree(f"{BASE_PATH}/modules/custom_modules")
     db.set("custom.modules", "allModules", [])
-    await message.edit("<b>Successfully unloaded all modules!\nRestarting...</b>")
+    await message.edit("<b>MUSIBAT KI JAD unloaded  modules!\nRestarting...</b>")
 
     db.set(
         "core.updater",
