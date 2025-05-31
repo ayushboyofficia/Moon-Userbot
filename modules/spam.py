@@ -47,8 +47,8 @@ async def spam(client: Client, message: Message):
 
 
 modules_help["spam"] = {
-    "spam [amount] [text]": "Start spam",
+    "spam [amount] [text]": "CHAALU KAR SALE spam",
     "statspam [amount] [text]": "Send and delete",
-    "fastspam [amount] [text]": "Start fast spam",
-    "slowspam [amount] [text]": "Start slow spam",
+    "fastspam [amount] [text]": "BHAARI SPAM TEZ⚡",
+    "slowspam [amount] [text]": "START DHEEMA SPAM",
 }
