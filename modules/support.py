@@ -34,10 +34,10 @@ async def support(_, message: Message):
 
     await message.edit(
         f"<b>DRAGON⚡-Userbot\n\n"
-        "GitHub: <a href=KYA KAREGA GITHUB LRKAR BHAI😒>Moon-Userbot</a>\n"
-        "Custom modules repository: <a href=MUNDA GARAM HO JANDA SII🥸🐉>"
+        "GitHub: <a href=KYA KAREGA GITHUB LRKAR BHAI😒>DRAGON-Userbot</a>\n"
+        "MADAD KE LIYE HELP KARE BHAIY: <a href=MUNDA GARAM HO JANDA SII🥸🐉>"
         "custom_modules</a>\n"
-        "License: <a href=NAHI HAIN LICENCE KAAT DO CHALLAN 🍋>GNU GPL v3</a>\n\n"
+        "License: <a href=NAHI HAIN LICENCE KAAT DO CHALLAN 🍋>PAGLA GPL v3</a>\n\n"
         "Channel: @lithiumpolymer\n"
         "Custom modules: @lithiumpolymer\n"
         "Chat [EN]: @lithiumpolymer\n"
