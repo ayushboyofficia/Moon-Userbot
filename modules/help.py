@@ -65,18 +65,18 @@ async def handle_navigation(_, message: Message):
             if module_manager.help_navigator.next_page():
                 await module_manager.help_navigator.send_page(reply_message)
                 return await message.delete()
-            await message.edit("No more pages available.")
+            await message.edit("AUR PAGE AVAILABLE NAHI HAIN BHAIYA.")
         elif cmd == "pp":
             if module_manager.help_navigator.prev_page():
                 await module_manager.help_navigator.send_page(reply_message)
                 return await message.delete()
-            return await message.edit("This is the first page.")
+            return await message.edit("YE PEHLA PAGE HAIN BHAI 😁.")
         elif cmd == "pq":
             await reply_message.delete()
-            return await message.edit("Help closed.")
+            return await message.edit("MADAD BAND KAR DI GAYI.")
 
 
-modules_help["help"] = {
+modules_help["MADAD"] = {
     "help [module/command name]": "Get common/module/command help",
     "pn/pp/pq": "Navigate through help pages"
     + " (pn: next page, pp: previous page, pq: quit help)",
