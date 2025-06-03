@@ -24,7 +24,7 @@ from utils.misc import modules_help, prefix, userbot_version, python_version, gi
 
 @Client.on_message(filters.command(["support", "repo"], prefix) & filters.me)
 async def support(_, message: Message):
-    devs = ["@lithiumpolymer", "@lithiumpolymer"]
+    devs = ["@GOD_AAYUSH_PYROGRAM_CLIENT", "@GOD_AAYUSH_PYROGRAM_CLIENT"]
     random.shuffle(devs)
 
     commands_count = 0.0
@@ -34,13 +34,13 @@ async def support(_, message: Message):
 
     await message.edit(
         f"<b>DRAGON⚡-Userbot\n\n"
-        "GitHub: <a href=KYA KAREGA GITHUB LRKAR BHAI😒>DRAGON-Userbot</a>\n"
+        "GitHub: <a href=KYA KAREGA GITHUB LRKAR BHAI😒>-Userbot</a>\n"
         "MADAD KE LIYE HELP KARE BHAIY: <a href=MUNDA GARAM HO JANDA SII🥸🐉>"
         "custom_modules</a>\n"
         "License: <a href=NAHI HAIN LICENCE KAAT DO CHALLAN 🍋>PAGLA GPL v3</a>\n\n"
-        "Channel: @lithiumpolymer\n"
-        "Custom modules: @lithiumpolymer\n"
-        "Chat [EN]: @lithiumpolymer\n"
+        "Channel: @GOD_AAYUSH_PYROGRAM_CLIENT\n"
+        "Custom modules: @GOD_AAYUSH_PYROGRAM_CLIENT\n"
+        "Chat [EN]: @GOD_AAYUSH_PYROGRAM_CLIENT"
         f"Main developers: {', '.join(devs)}\n\n"
         f"Python version: {python_version}\n"
         f"Modules count: {len(modules_help) / 1}\n"
@@ -68,7 +68,7 @@ async def version(client: Client, message: Message):
 
     await message.reply(
         f"<b>🐉⚡🐉Userbot version: {userbot_version}\n"
-        f"Changelog </b><i><a href=https://t.me/lithiumpolymer/{changelog}>in channel</a></i>.<b>\n"
+        f"Changelog </b><i><a href=https://t.me/GOD_AAYUSH_PYROGRAM_CLIENT/{changelog}>in channel</a></i>.<b>\n"
         f"Changelog written by </b><i>"
         f"<a href=https://t.me/Qbtaumai>Abhi</a></i>\n\n"
         + (
