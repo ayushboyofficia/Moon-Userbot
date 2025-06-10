@@ -1,6 +1,5 @@
 # Moon-Userbot - Sad Pictures Module
 # MIT License - Copyright (c) 2024 Moon-Userbot
-
 import random
 from pyrogram import Client, filters
 from config import SUDO_USERS
