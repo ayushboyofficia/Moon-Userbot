@@ -1,52 +1,25 @@
 import time
-import asyncio
 from datetime import datetime
 from pyrogram import Client, filters
 from pyrogram.types import Message
+from Moon.helpers.basic import edit_or_reply
+from config import HANDLER as hl
 
-# Add this animation at the top of your file
-PING_ANIMATION = [
-    "🟥⬜⬜⬜⬜⬜⬜⬜⬜⬜",
-    "🟥🟥⬜⬜⬜⬜⬜⬜⬜⬜",
-    "🟥🟥🟧⬜⬜⬜⬜⬜⬜⬜",
-    "🟥🟥🟧🟧⬜⬜⬜⬜⬜⬜",
-    "🟥🟥🟧🟧🟨⬜⬜⬜⬜⬜",
-    "🟥🟥🟧🟧🟨🟨⬜⬜⬜⬜",
-    "🟥🟥🟧🟧🟨🟨🟩⬜⬜⬜",
-    "🟥🟥🟧🟧🟨🟨🟩🟩⬜⬜",
-    "🟥🟥🟧🟧🟨🟨🟩🟩🟦⬜",
-    "🟥🟥🟧🟧🟨🟨🟩🟩🟦🟦",
-    "🟥🟥🟧🟧🟨🟨🟩🟩🟦⬛",
-    "🟥🟥🟧🟧🟨🟨🟩🟩⬛⬛",
-    "🟥🟥🟧🟧🟨🟨🟩⬛⬛⬛",
-    "🟥🟥🟧🟧🟨🟨⬛⬛⬛⬛",
-    "🟥🟥🟧🟧🟨⬛⬛⬛⬛⬛",
-    "🟥🟥🟧🟧⬛⬛⬛⬛⬛⬛",
-    "🟥🟥🟧⬛⬛⬛⬛⬛⬛⬛",
-    "🟥🟥⬛⬛⬛⬛⬛⬛⬛⬛",
-    "🟥⬛⬛⬛⬛⬛⬛⬛⬛⬛"
-]
+START_TIME = datetime.utcnow()
 
-# Replace your existing ping handler or add this new one
-@Client.on_message(filters.command("ping", prefixes=["!", ".", "/"]) & filters.me)
-async def animated_ping(client: Client, message: Message):
-    start_time = time.time()
-    ping_msg = await message.edit("**🚀 Pinging...**")
+@Client.on_message(filters.command("ping", hl) & filters.me)
+async def ping_me(client: Client, message: Message):
+    start = time.time()
+    moon = await edit_or_reply(message, "`Pong!`")
+    end = time.time()
+    duration = (end - start) * 1000
     
-    # Animation loop
-    for frame in PING_ANIMATION:
-        await ping_msg.edit(f"**{frame}**\n\n`Pinging Moon-Userbot Server...`")
-        await asyncio.sleep(0.2)
+    uptime = datetime.utcnow() - START_TIME
+    uptime_seconds = uptime.total_seconds()
     
-    # Calculate ping time
-    end_time = time.time()
-    ping_time = round((end_time - start_time) * 1000, 2)
-    
-    # Final result
-    await ping_msg.edit(
-        f"**🏓 PONG!**\n"
-        f"**⚡ Speed:** `{ping_time} ms`\n"
-        f"**🌙 Userbot:** `Moon-Userbot`\n"
-        f"**🐍 Python:** `3.11`\n"
-        f"**🔥 Pyrogram:** `2.0.0`"
+    await moon.edit(
+        f"🌙 **Moon Userbot Ping**\n"
+        f"• **Ping:** `{duration:.2f}ms`\n"
+        f"• **Uptime:** `{uptime_seconds:.2f}s`\n"
+        f"• **Version:** `1.0`"
     )
