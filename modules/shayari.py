@@ -1,31 +1,28 @@
-from Moon import *
-from Moon import MoonBot
-from Moon.helpers import *
+from pyrogram import Client, filters
+from pyrogram.types import Message
+import random
 
-shayari_list = [
+# Shayari Database
+SHAYARI_DB = [
     "दिल तोड़ने वालों को मिलते रहेंगे सज्जन,\nहम जैसे ही किसी के हो जाएंगे, खुदा का शुक्र अदा करेंगे।",
     "मोहब्बत की राह में चलना सीख लो,\nजिंदगी भर के लिए याद आऊंगा मैं तुम्हें।",
     "तुम्हारी याद के सिवा कुछ भी नहीं,\nतुम्हारे बिना जिंदगी अधूरी सी लगती है।",
-    # यहाँ और शायरियाँ जोड़ें
     "ख्वाबों में भी तुम आओ तो डर लगता है,\nवरना हम तो तन्हाई में भी साथ रहते हैं।"
 ]
 
-@MoonBot.on(events.NewMessage(pattern="^[.!/]shayari$"))
-async def shayari(event):
-    try:
-        random_shayari = random.choice(shayari_list)
-        await event.reply(random_shayari)
-    except Exception as e:
-        await event.reply(f"Error: {str(e)}")
+@Client.on_message(filters.command("shayari", prefixes=["!", ".", "/"]) & filters.me)
+async def shayari_handler(client: Client, message: Message):
+    """Random Shayari भेजता है"""
+    random_shayari = random.choice(SHAYARI_DB)
+    await message.edit(random_shayari)
 
-@MoonBot.on(events.NewMessage(pattern="^[.!/]shayari (.*)"))
-async def add_shayari(event):
-    if event.sender_id not in SUDO_USERS:
-        return await event.reply("⚠️ यह सिर्फ Sudo Users के लिए है!")
+@Client.on_message(filters.command("addshayari", prefixes=["!", ".", "/"]) & filters.user(SUDO_USERS))
+async def add_shayari_handler(client: Client, message: Message):
+    """नई Shayari जोड़ता है (सिर्फ Sudo Users)"""
+    if len(message.command) < 2:
+        await message.edit("Usage: `.addshayari Your new shayari text`")
+        return
     
-    new_shayari = event.pattern_match.group(1)
-    if len(new_shayari) < 10:
-        return await event.reply("❌ Shayari बहुत छोटी है!")
-    
-    shayari_list.append(new_shayari)
-    await event.reply("✅ नई Shayari सफलतापूर्वक जोड़ दी गई है!")
+    new_shayari = " ".join(message.command[1:])
+    SHAYARI_DB.append(new_shayari)
+    await message.edit(f"✅ Shayari added successfully!\nTotal shayaris now: {len(SHAYARI_DB)}")
