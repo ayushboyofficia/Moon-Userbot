@@ -80,8 +80,6 @@ add_command_help(
         ["carbon <theme> or .cr <theme>", "Generate carbon with specific theme"],
     ],
 )
-```
-
 ### Features:
 1. **Random Theme Selection**: Automatically picks a beautiful theme if none specified
 2. **Theme Customization**: Users can specify their preferred theme
