@@ -1,50 +1,47 @@
 import asyncio
+import sys
+from pathlib import Path
 from io import BytesIO
-
+import aiohttp
 from pyrogram import Client, filters
 from pyrogram.types import Message
 
-from config import CMD_HANDLER
-from config import SUDO_USERS
-from Moon import aiosession
-from Moon.helpers.basic import edit_or_reply
-from Moon.helpers.PyroHelpers import ReplyCheck
-from .help import add_command_help
+# Path सेटअप
+sys.path.append(str(Path(__file__).parent.parent.parent))
+from utils.helpers import edit_or_reply
+from config import Config
+
+hl = Config.CMD_HANDLER
+
 async def make_carbon(code):
     url = "https://carbonara.solopov.dev/api/cook"
-    async with aiosession.post(url, json={"code": code}) as resp:
-        image = BytesIO(await resp.read())
-    image.name = "carbon.png"
-    return image
-@Client.on_message(
-    filters.command(["carbon"], CMD_HANDLER) & (filters.me | filters.user(SUDO_USERS))
-)
+    async with aiohttp.ClientSession() as session:
+        async with session.post(url, json={"code": code}) as resp:
+            image = BytesIO(await resp.read())
+            image.name = "carbon.png"
+            return image
+
+@Client.on_message(filters.command("carbon", hl) & filters.me)
 async def carbon_func(client: Client, message: Message):
-    text = (
-        message.text.split(None, 1)[1]
-        if len(message.command) != 1
-        else None
-    )
+    text = " ".join(message.command[1:]) if len(message.command) > 1 else None
     if message.reply_to_message:
         text = message.reply_to_message.text or message.reply_to_message.caption
     if not text:
-        return await message.delete()
-    Moon = await edit_or_reply(message, "`Preparing Carbon...`")
-    carbon = await make_carbon(text)
-    await Moon.edit("`Uploading...`")
-    await asyncio.gather(
-        Moon.delete(),
-        client.send_photo(
+        return await edit_or_reply(message, "Please provide text or reply to a message!")
+    
+    msg = await edit_or_reply(message, "Creating Carbon...")
+    try:
+        carbon = await make_carbon(text)
+        await msg.edit("Uploading...")
+        await client.send_photo(
             message.chat.id,
             carbon,
-            caption=f"**Carbonised by** {client.me.mention}",
-            reply_to_message_id=ReplyCheck(message),
-        ),
-    )
-    carbon.close()
-add_command_help(
-    "carbon",
-    [
-        ["carbon <reply>", "Makes carbon image of the text."],
-    ],
-)
+            caption=f"Carbonized by {client.me.mention}",
+            reply_to_message_id=message.reply_to_message.id if message.reply_to_message else None
+        )
+        await msg.delete()
+    except Exception as e:
+        await msg.edit(f"Error: {str(e)}")
+    finally:
+        if 'carbon' in locals():
+            carbon.close()
