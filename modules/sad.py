@@ -4,11 +4,9 @@ import random
 from pyrogram import Client, filters
 from config import SUDO_USERS
 from .help import add_command_help
-
 hl = "."
-
-@Client.on_message(
-    filters.command(["sad"], hl) & (filters.me | filters.user(SUDO_USERS))
+@Client.on_message
+    (filters.command(["sad"], hl) & (filters.me | filters.user(SUDO_USERS))
 async def send_sad_pic(client, message):
     """Send random sad pictures"""
     sad_pics = [
