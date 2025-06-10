@@ -6,9 +6,7 @@ from pyrogram import Client, filters
 from pyrogram.types import Message
 from config import SUDO_USERS
 from .help import *
-
 hl = "."
-
 CARBON_THEMES = [
     "3024-night",
     "a11y-dark",
