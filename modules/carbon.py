@@ -1,7 +1,5 @@
 # Carbon Module for Moon Userbot
-
 Here's a complete Carbon module for Moon Userbot that allows users to generate beautiful code images:
-
 ```python
 # MIT License
 
