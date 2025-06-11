@@ -1,72 +1,105 @@
 import os
 import requests
+import instaloader
 from pyrogram import Client, filters
 from pyrogram.types import Message
+from yt_dlp import YoutubeDL
 
-# Install required package first: pip install instaloader
-try:
-    import instaloader
-except ImportError:
-    os.system("pip install instaloader")
-    import instaloader
+# Install required packages:
+# pip install instaloader yt-dlp requests
 
 L = instaloader.Instaloader()
+ydl_opts = {'format': 'best'}
 
-@Client.on_message(filters.command("reel") & filters.me)
-async def insta_reel_downloader(client: Client, message: Message):
-    """Download Instagram Reels by Link"""
+@Client.on_message(filters.command(["scrape", "dl"]) & filters.me)
+async def universal_scraper(client: Client, message: Message):
+    """Multi-Platform Content Downloader"""
     
     if len(message.command) < 2:
-        return await message.reply("**Usage:** `.reel <instagram-reel-url>`")
+        return await message.reply("**Usage:**\n`.scrape instagram <url>`\n`.scrape youtube <url>`\n`.scrape twitter <url>`")
 
-    url = message.command[1]
-    
+    platform = message.command[1].lower()
+    url = message.command[2] if len(message.command) > 2 else None
+
+    if not url:
+        return await message.reply("❗ URL दें!")
+
+    msg = await message.reply(f"🔍 {platform.capitalize()} से डाउनलोड शुरू...")
+
     try:
-        # Extract shortcode from URL
-        shortcode = url.split("/reel/")[-1].split("/")[0].split("?")[0]
-        
-        msg = await message.reply("⬇️ Downloading reel...")
-        
-        # Download reel
-        post = instaloader.Post.from_shortcode(L.context, shortcode)
-        
-        if not post.is_video:
-            return await msg.edit("❌ This is not a video reel!")
-        
-        # Get the best quality video URL
-        video_url = post.video_url
-        filename = f"reel_{shortcode}.mp4"
-        
-        # Download video
-        with requests.get(video_url, stream=True) as r:
+        # Instagram Downloader
+        if platform == "instagram":
+            if "/reel/" in url or "/p/" in url:
+                shortcode = url.split("/reel/")[-1].split("/p/")[-1].split("/")[0].split("?")[0]
+                post = instaloader.Post.from_shortcode(L.context, shortcode)
+                
+                if post.is_video:
+                    video_url = post.video_url
+                    filename = f"insta_{shortcode}.mp4"
+                    await download_and_send(video_url, filename, client, message, msg, "video")
+                else:
+                    await message.reply_photo(post.url, caption=f"📸 Instagram Post\n\n👤 @{post.owner_username}")
+
+            elif "/stories/" in url:
+                await message.reply("❗ Stories डाउनलोड करने के लिए Instagram लॉगिन जरूरी है")
+
+        # YouTube Downloader
+        elif platform == "youtube":
+            with YoutubeDL(ydl_opts) as ydl:
+                info = ydl.extract_info(url, download=False)
+                if 'entries' in info:  # Playlist
+                    await message.reply("❗ प्लेलिस्ट के लिए `.ytplaylist` कमांड यूज करें")
+                else:
+                    filename = f"yt_{info['id']}.mp4"
+                    await download_and_send(info['url'], filename, client, message, msg, "video")
+
+        # Twitter Downloader
+        elif platform == "twitter":
+            tweet_id = url.split("/status/")[1].split("?")[0]
+            api_url = f"https://twitback.onrender.com/tweet?url={tweet_id}"
+            response = requests.get(api_url).json()
+            
+            if 'video' in response:
+                video_url = response['video']
+                filename = f"twitter_{tweet_id}.mp4"
+                await download_and_send(video_url, filename, client, message, msg, "video")
+            else:
+                await message.reply("❗ वीडियो नहीं मिला")
+
+    except Exception as e:
+        await msg.edit(f"❌ Error: `{str(e)}`")
+
+async def download_and_send(url, filename, client, message, msg, media_type):
+    """Helper function to download and send media"""
+    try:
+        # Download file
+        with requests.get(url, stream=True) as r:
             r.raise_for_status()
             with open(filename, 'wb') as f:
                 for chunk in r.iter_content(chunk_size=8192):
                     f.write(chunk)
-        
-        # Upload to Telegram
-        await msg.edit("⬆️ Uploading...")
-        await message.reply_video(
-            filename,
-            caption=f"🎬 **Instagram Reel**\n\n👤 **By:** [@{post.owner_username}](https://instagram.com/{post.owner_username})"
-        )
-        
+
+        # Send file
+        await msg.edit("📤 Uploading...")
+        if media_type == "video":
+            await message.reply_video(filename)
+        elif media_type == "photo":
+            await message.reply_photo(filename)
+
         await msg.delete()
-    
-    except Exception as e:
-        await message.reply(f"❌ Error: `{str(e)}`")
-    
     finally:
         if os.path.exists(filename):
             os.remove(filename)
 
-# Help section (if your help system supports it)
+# Help section
 try:
     from modules.help import add_command_help
     add_command_help(
-        "Instagram",
+        "Scraper", 
         [
-            ["reel <url>", "Download Instagram reels"],
+            ["scrape instagram <url>", "Instagram Reels/Posts डाउनलोड करे"],
+            ["scrape youtube <url>", "YouTube Videos डाउनलोड करे"],
+            ["scrape twitter <url>", "Twitter Videos डाउनलोड करे"],
         ]
     )
 except:
