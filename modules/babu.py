@@ -1,5 +1,6 @@
 import random
 from pyrogram import Client, filters
+
 @Client.on_message(filters.command("babu") & filters.me)
 async def babu_command(client, message):
     babu_images = [
@@ -47,12 +48,20 @@ async def babu_command(client, message):
         "https://graph.org/file/639db6810d53820426b5d.jpg",
         "https://graph.org/file/b9a8ec68b3a0710742823.jpg"
     ]
-    await message.reply_photo(random.choice(babu_images))
+    
+    try:
+        await message.reply_photo(random.choice(babu_images))
+    except Exception as e:
+        await message.reply(f"Error: {e}")
 
-from .help import add_command_help
-add_command_help(
-    "Babu",
-    [
-        ["babu", "Send random Babu pictures"],
-    ]
-)
+# अगर help सिस्टम काम नहीं कर रहा है तो इससे बचने का तरीका
+try:
+    from modules.help import add_command_help
+    add_command_help(
+        "Babu",
+        [
+            ["babu", "रैंडम Babu तस्वीरें भेजता है"],
+        ]
+    )
+except ImportError:
+    print("Help system not available, skipping help text addition")
