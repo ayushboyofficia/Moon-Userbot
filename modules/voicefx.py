@@ -1,28 +1,61 @@
+import os
+import random
 import numpy as np
 import soundfile as sf
 from pyrogram import Client, filters
+from pyrogram.types import Message
+
+# Install required packages: 
+# pip install numpy soundfile
 
 @Client.on_message(filters.command("voicefx") & filters.me)
-async def voice_effects(client, message):
+async def voice_effects(client: Client, message: Message):
+    """किसी वॉइस मैसेज को अलग-अलग इफेक्ट्स दें!"""
+    
     if not message.reply_to_message or not message.reply_to_message.voice:
-        return await message.reply("किसी वॉइस मैसेज को रिप्लाई करो!")
+        return await message.reply("❗ किसी वॉइस मैसेज को रिप्लाई करें!")
 
-    voice = await message.reply_to_message.download("voice.ogg")
+    try:
+        # Download voice message
+        voice_msg = await message.reply_to_message.download("voice.ogg")
+        
+        # Apply effects
+        data, samplerate = sf.read(voice_msg)
+        
+        # Random effect selection
+        effect_type = random.choice(["high_pitch", "low_pitch", "robot", "alien"])
+        
+        if effect_type == "high_pitch":
+            new_data = data * 1.5  # High pitch
+        elif effect_type == "low_pitch":
+            new_data = data * 0.5  # Low pitch
+        elif effect_type == "robot":
+            new_data = np.sin(data)  # Robot voice
+        else:
+            new_data = data + np.random.normal(0, 0.1, len(data))  # Alien voice
+        
+        # Save and send
+        sf.write("modified_voice.ogg", new_data, samplerate)
+        await message.reply_voice("modified_voice.ogg")
+        
+    except Exception as e:
+        await message.reply(f"❌ Error: `{str(e)}`")
     
-    # Apply voice effects
-    data, samplerate = sf.read(voice)
-    
-    # Random effect selection
-    effect = random.choice([
-        lambda x: x * 1.5,  # High pitch
-        lambda x: x * 0.5,  # Low pitch
-        lambda x: np.sin(x), # Robot voice
-        lambda x: x + np.random.normal(0, 0.1, len(x))  # Alien voice
-    ])
-    
-    new_voice = effect(data)
-    sf.write("effect.ogg", new_voice, samplerate)
-    
-    await message.reply_voice("effect.ogg")
-    os.remove(voice)
-    os.remove("effect.ogg")
+    finally:
+        # Cleanup
+        if os.path.exists("voice.ogg"):
+            os.remove("voice.ogg")
+        if os.path.exists("modified_voice.ogg"):
+            os.remove("modified_voice.ogg")
+
+# Help Menu (if available)
+try:
+    from modules.help import add_command_help
+    add_command_help(
+        "VoiceFX",
+        [
+            ["voicefx", "वॉइस मैसेज को फनी इफेक्ट्स दें (रिप्लाई करके)"],
+        ]
+    )
+except:
+    pass
